@@ -1,0 +1,40 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      # Hoist the secret into job env so steps can gate on it — `secrets.*`
+      # is empty for fork PRs and `env.*` referenced without this line is
+      # never populated at all (the old check silently always-false'd).
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: pip install ruff mypy
+      - name: Lint
+        run: ruff check .
+      - name: Type check
+        run: mypy --ignore-missing-imports .
+      - name: Unit tests (hermetic — no browser, no network, no API key)
+        run: pytest tests/unit
+      - run: playwright install --with-deps chromium
+      - name: Run fast tests (no AI-dependent tests, no API key needed)
+        run: pytest -m "not ai" --reruns 1
+      - name: Run AI-assisted tests
+        if: env.ANTHROPIC_API_KEY != ''
+        run: pytest -m "ai"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-reports
+          path: reports/
