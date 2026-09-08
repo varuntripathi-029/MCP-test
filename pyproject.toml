@@ -1,0 +1,41 @@
+[project]
+name = "mcp-test-framework"
+version = "0.1.0"
+description = "AI-augmented test automation framework for Model Context Protocol (MCP) servers and their UIs, built on Playwright + pytest."
+requires-python = ">=3.10"
+dependencies = [
+    "playwright>=1.45.0",
+    "pytest>=8.2.0",
+    "pytest-playwright>=0.5.0",
+    "pytest-asyncio>=0.23.7",
+    "pytest-html>=4.1.1",
+    "pytest-xdist>=3.6.1",
+    "pytest-rerunfailures>=14.0",
+    "mcp>=1.2.0",
+    "anthropic>=0.34.0",
+    "pydantic>=2.7.0",
+    "pyyaml>=6.0.1",
+    "python-dotenv>=1.0.1",
+    "pillow>=10.3.0",
+    "numpy>=1.26.4",
+    "tenacity>=8.3.0",
+    "rich>=13.7.1",
+    "jsonschema>=4.22.0",
+]
+
+[project.optional-dependencies]
+dev = ["ruff>=0.5.0", "black>=24.4.2", "mypy>=1.10.0"]
+
+# pytest configuration lives in pytest.ini (pytest.ini takes precedence over
+# [tool.pytest.ini_options] when both exist, so keep it in one place).
+
+[tool.ruff]
+target-version = "py310"
+line-length = 110
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM"]
+
+[tool.mypy]
+ignore_missing_imports = true
+exclude = ["\\.venv", "reports"]

@@ -1,0 +1,25 @@
+local:
+  base_url: "https://rahulshettyacademy.com/practice"
+  mcp_server:
+    transport: stdio
+    # Ships with the repo so tests/mcp/ run green out of the box.
+    # Point this at your real server when you have one; "python" is
+    # resolved to the interpreter running pytest (see core/mcp_client.py).
+    command: "python"
+    args: ["examples/demo_server.py"]
+  headless: true
+
+staging:
+  base_url: "https://staging.example.com"
+  mcp_server:
+    transport: sse
+    url: "https://staging.example.com/mcp"
+  headless: true
+
+ci:
+  base_url: "https://rahulshettyacademy.com/practice"
+  mcp_server:
+    transport: stdio
+    command: "python"
+    args: ["examples/demo_server.py"]
+  headless: true
